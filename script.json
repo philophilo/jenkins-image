@@ -1,0 +1,42 @@
+{
+	"variables":{
+		"access_key": "{{env `aws_access_key`}}",
+		"secret_key": "{{env `aws_secret_key`}}",
+		"region": "{{env `aws_region`}}"
+	},
+	
+	"builders": [{
+        "type": "amazon-ebs",
+        "region": "{{user `region`}}",
+        "access_key": "{{user `access_key`}}",
+        "secret_key": "{{user `secret_key`}}",
+        "source_ami": "ami-5e8bb23b",
+        "instance_type": "t2.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "Jenkins-{{isotime | clean_ami_name}}",
+        "ami_description": "Ubuntu 16.04 Jenkins instance",
+        "tags": {
+            "role": "JenkinsImage"
+        },
+        "run_tags": {
+            "role": "JenkinsImage"
+        }
+    }],
+
+	"provisioners":[
+	    {
+	        "type": "file",
+	        "source": "./env-kube",
+	        "destination": "/home/ubuntu/.env-kube"
+	    },
+        {
+            "type": "file",
+            "source": "./kube.sh",
+            "destination": "/home/ubuntu/kube.sh"
+        },
+	    {
+	        "type": "ansible",
+	        "playbook_file": "playbook.yml"
+	    }
+	]
+}

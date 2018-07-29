@@ -1,0 +1,12 @@
+---
+#########  essentials ##################
+
+- name: install server essentials
+  apt: 
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - default-jre
+    - default-jdk
+    - nginx
